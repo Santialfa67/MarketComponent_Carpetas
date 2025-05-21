@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".CarritoActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarCarrito"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        app:title="Mi Carrito"
+        app:titleTextColor="@android:color/white" />
+
+    <TextView
+        android:id="@+id/textViewCarritoVacio"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="Tu carrito está vacío. ¡Añade algunos productos!"
+        android:textSize="18sp"
+        android:visibility="gone" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewCarrito"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"      android:layout_weight="1"       android:padding="8dp"
+        android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total:"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textViewTotalCarrito"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="$0.00"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="?attr/colorAccent"
+            android:gravity="end"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/buttonPagar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Proceder al Pago"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp" />
+
+</LinearLayout>
