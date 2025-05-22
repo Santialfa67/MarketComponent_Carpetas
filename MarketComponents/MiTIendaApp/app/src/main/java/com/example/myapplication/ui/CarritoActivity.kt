@@ -17,81 +17,102 @@ import com.example.myapplication.ui.viewmodel.CarritoViewModelFactory
 import androidx.activity.viewModels // Para usar viewModels()
 import com.example.myapplication.adapters.CarritoAdapter
 
+import android.widget.LinearLayout // Para el layoutCarritoVacio
+import androidx.appcompat.widget.Toolbar
+import com.google.android.material.button.MaterialButton // Importar MaterialButton
+
 class CarritoActivity : AppCompatActivity() {
 
+    private lateinit var toolbar: Toolbar // Declaración de la Toolbar
     private lateinit var recyclerViewCarrito: RecyclerView
-    private lateinit var textViewTotalCarrito: TextView
-    private lateinit var buttonPagar: Button
     private lateinit var textViewCarritoVacio: TextView
+    private lateinit var layoutCarritoVacio: LinearLayout // Nuevo: Layout para el mensaje de carrito vacío
+    private lateinit var textViewTotalCarrito: TextView
+    private lateinit var textViewSubtotalItems: TextView // Nuevo: TextView para el subtotal
+    private lateinit var layoutResumenCarrito: LinearLayout // Nuevo: Layout para el resumen del carrito
+    private lateinit var buttonPagar: MaterialButton // Ahora es MaterialButton
 
-    // Mantén el CarritoViewModel aquí, pero solo para la LOGICA DE PAGO (API).
-    // No gestionará los ítems del carrito directamente, eso lo hará CarritoManager.
+    private lateinit var carritoAdapter: CarritoAdapter // Adaptador para el RecyclerView
     private val carritoViewModel: CarritoViewModel by viewModels {
         CarritoViewModelFactory(RetrofitClient.instance)
     }
-
-    private lateinit var carritoAdapter: CarritoAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_carrito)
 
-        val toolbar: androidx.appcompat.widget.Toolbar = findViewById(R.id.toolbarCarrito)
+        // Inicializar la Toolbar
+        toolbar = findViewById(R.id.toolbarCarrito)
         setSupportActionBar(toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Mi Carrito"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true) // Botón de regreso
+        supportActionBar?.title = "Mi Carrito" // Título de la toolbar
 
+        // Inicializar vistas
         recyclerViewCarrito = findViewById(R.id.recyclerViewCarrito)
-        textViewTotalCarrito = findViewById(R.id.textViewTotalCarrito)
-        buttonPagar = findViewById(R.id.buttonPagar)
         textViewCarritoVacio = findViewById(R.id.textViewCarritoVacio)
+        layoutCarritoVacio = findViewById(R.id.layoutCarritoVacio) // Inicializar el layout de vacío
+        textViewTotalCarrito = findViewById(R.id.textViewTotalCarrito)
+        textViewSubtotalItems = findViewById(R.id.textViewSubtotalItems) // Inicializar subtotal
+        layoutResumenCarrito = findViewById(R.id.layoutResumenCarrito) // Inicializar el layout de resumen
+        buttonPagar = findViewById(R.id.buttonPagar) // Ahora es MaterialButton
 
-        setupRecyclerView()
-        observeCarritoState() // Renombramos la función para observar el estado del carrito
-        setupListeners()
-    }
+        // Configurar RecyclerView
+        recyclerViewCarrito.layoutManager = LinearLayoutManager(this)
 
-    private fun setupRecyclerView() {
+        // Inicializar el adaptador. Se le pasa una lambda para manejar los cambios de cantidad
         carritoAdapter = CarritoAdapter(
-            onQuantityChanged = { carritoItem, newQuantity ->
-                // Llama al CarritoManager para actualizar la cantidad
-                CarritoManager.actualizarCantidad(carritoItem.producto, newQuantity)
+            onQuantityChange = { producto, newQuantity ->
+                // Actualiza la cantidad en CarritoManager
+                CarritoManager.actualizarCantidad(producto, newQuantity)
+            },
+            onRemoveItem = { producto ->
+                // Elimina el producto del carrito si la cantidad llega a 0
+                CarritoManager.removerProductoDelCarrito(producto)
             }
         )
-        recyclerViewCarrito.layoutManager = LinearLayoutManager(this)
         recyclerViewCarrito.adapter = carritoAdapter
-    }
 
-    private fun observeCarritoState() {
-        // Observa el LiveData del Singleton CarritoManager para los ítems del carrito
+        // Observar los ítems del carrito desde CarritoManager
         CarritoManager.carritoItems.observe(this, Observer { items ->
-            carritoAdapter.submitList(items.toMutableList())
+            // Actualiza el adaptador con los nuevos ítems
+            carritoAdapter.submitList(items) // Asumo que CarritoAdapter usa ListAdapter o similar
 
+            // Mostrar/ocultar mensaje de carrito vacío y sección de resumen
             if (items.isEmpty()) {
-                textViewCarritoVacio.visibility = View.VISIBLE
+                layoutCarritoVacio.visibility = View.VISIBLE
                 recyclerViewCarrito.visibility = View.GONE
-                buttonPagar.isEnabled = false // Deshabilita el botón si no hay ítems
+                layoutResumenCarrito.visibility = View.GONE
             } else {
-                textViewCarritoVacio.visibility = View.GONE
+                layoutCarritoVacio.visibility = View.GONE
                 recyclerViewCarrito.visibility = View.VISIBLE
-                buttonPagar.isEnabled = true // Habilita el botón si hay ítems
+                layoutResumenCarrito.visibility = View.VISIBLE
             }
         })
 
-        // Observa el LiveData del Singleton CarritoManager para el total
+        // Observar el total del carrito desde CarritoManager
         CarritoManager.totalCarrito.observe(this, Observer { total ->
-            textViewTotalCarrito.text = String.format("$%.2f", total)
+            textViewTotalCarrito.text = "$${String.format("%.2f", total)}"
+            // Calcular y mostrar subtotal de ítems (suma de (precio * cantidad) de cada item)
+            val subtotalItems = CarritoManager.carritoItems.value?.sumOf { it.producto.precio * it.cantidad } ?: 0.0
+            textViewSubtotalItems.text = "$${String.format("%.2f", subtotalItems)}"
         })
 
-        // Observa los resultados del pago del CarritoViewModel (que gestiona la API)
+        // Listener para el botón de Pagar
+        buttonPagar.setOnClickListener {
+            // Llama a la función del ViewModel para procesar el pago
+            carritoViewModel.realizarPago()
+        }
+
+        // Observar resultados del pago desde ViewModel
         carritoViewModel.checkoutResult.observe(this, Observer { success ->
             if (success) {
-                Toast.makeText(this, "¡Pedido realizado con éxito!", Toast.LENGTH_LONG).show()
-                // Después de un pago exitoso, el CarritoManager ya vació el carrito
-                finish() // Cierra la actividad del carrito
+                Toast.makeText(this, "Pago realizado con éxito. Carrito vaciado.", Toast.LENGTH_SHORT).show()
+                // El CarritoManager ya vacía el carrito en el ViewModel
+                // Si necesitas hacer algo más después de un pago exitoso, aquí es el lugar
             }
         })
 
+        // Observar mensajes de error del ViewModel
         carritoViewModel.errorMessage.observe(this, Observer { message ->
             message?.let {
                 Toast.makeText(this, it, Toast.LENGTH_LONG).show()
@@ -99,14 +120,7 @@ class CarritoActivity : AppCompatActivity() {
         })
     }
 
-    private fun setupListeners() {
-        buttonPagar.setOnClickListener {
-            // Llama a la función de pago del CarritoViewModel.
-            // Este ViewModel internamente accederá a los ítems del CarritoManager.
-            carritoViewModel.realizarPago()
-        }
-    }
-
+    // Manejar el clic en el botón de regreso de la Toolbar
     override fun onSupportNavigateUp(): Boolean {
         onBackPressedDispatcher.onBackPressed()
         return true

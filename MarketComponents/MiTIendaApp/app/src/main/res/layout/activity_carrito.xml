@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#F5F5F5"
     tools:context=".CarritoActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -12,65 +13,117 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+        android:elevation="4dp"
         app:title="Mi Carrito"
-        app:titleTextColor="@android:color/white" />
+        app:titleTextColor="@android:color/white"
+        app:navigationIcon="?attr/homeAsUpIndicator" /> <LinearLayout
+    android:id="@+id/layoutCarritoVacio"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:padding="16dp">
+
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/carrito_bar"
+        app:tint="?attr/colorPrimary"
+        android:contentDescription="Icono de carrito vacío"
+        android:layout_marginBottom="16dp" />
 
     <TextView
         android:id="@+id/textViewCarritoVacio"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tu carrito está vacío.\n¡Explora nuestros productos y añade algo!"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@android:color/darker_gray"
         android:gravity="center"
-        android:text="Tu carrito está vacío. ¡Añade algunos productos!"
-        android:textSize="18sp"
-        android:visibility="gone" />
+        android:lineSpacingExtra="4dp" />
+</LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewCarrito"
         android:layout_width="match_parent"
-        android:layout_height="0dp"      android:layout_weight="1"       android:padding="8dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/darker_gray" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingVertical="4dp" android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_carrito" /> <View
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="@color/gray_200"
+    android:layout_marginHorizontal="16dp" />
 
     <LinearLayout
+        android:id="@+id/layoutResumenCarrito"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@android:color/white"
+        android:elevation="4dp" > <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total:"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/textViewTotalCarrito"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="$0.00"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="?attr/colorAccent"
-            android:gravity="end"
-            android:layout_marginStart="8dp" />
+            android:text="Subtotal:"
+            android:textSize="18sp"
+            android:textColor="@android:color/black" />
 
+        <TextView
+            android:id="@+id/textViewSubtotalItems"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$0.00"
+            android:textSize="18sp"
+            android:textColor="@android:color/black" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/buttonPagar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Proceder al Pago"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Total del Carrito:"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/textViewTotalCarrito"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="$0.00"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorPrimary" /> </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonPagar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proceder al Pago"
+            android:textSize="18sp"
+            android:paddingVertical="14dp"
+            android:backgroundTint="?attr/colorPrimary"
+            android:textColor="@android:color/white"
+            app:cornerRadius="12dp" /> </LinearLayout>
 
 </LinearLayout>
