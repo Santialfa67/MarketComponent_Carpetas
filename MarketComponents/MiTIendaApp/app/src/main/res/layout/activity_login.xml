@@ -1,78 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="32dp"
+    android:padding="24dp"
     android:orientation="vertical"
-    android:gravity="center_vertical" android:background="#f0f8f0">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bienvenido de nuevo"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="#2e7d32"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="48dp" />
+    android:gravity="center_vertical"
+    android:background="#FFFFFF"> <TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Bienvenido de nuevo"
+    android:textSize="32sp"
+    android:textStyle="bold"
+    android:textColor="@color/design_default_color_primary_dark" android:layout_gravity="center_horizontal"
+    android:layout_marginBottom="64dp"
+    android:fontFamily="sans-serif-medium"
+    tools:text="Bienvenido de nuevo" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="20dp"
         app:hintEnabled="true"
-        app:hintTextColor="#81c784"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        app:hintTextColor="?attr/colorPrimary" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Email"
             android:inputType="textEmailAddress"
-            android:textColor="#2e7d32"
-            android:textColorHint="#81c784"
+            android:textColor="?attr/colorOnSurface" android:textColorHint="?attr/colorPrimary"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="32dp"
         app:hintEnabled="true"
-        app:hintTextColor="#81c784"
+        app:hintTextColor="?attr/colorPrimary"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        app:endIconMode="password_toggle"> <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/editTextPassword"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Contraseña"
-        android:inputType="textPassword"
-        android:textColor="#2e7d32"
-        android:textColorHint="#81c784"
-        android:textSize="18sp" />
+        app:endIconMode="password_toggle">
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Contraseña"
+            android:inputType="textPassword"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorPrimary"
+            android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonLogin"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="60dp"
         android:text="Iniciar Sesión"
-        android:textSize="18sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:cornerRadius="12dp"
-        android:backgroundTint="#2e7d32"
-        android:textColor="#ffffff"
-        android:elevation="4dp"
-        android:layout_marginBottom="16dp"/>
+        android:backgroundTint="?attr/colorPrimary" android:textColor="?attr/colorOnPrimary" android:elevation="4dp"
+        android:layout_marginBottom="24dp"
+        android:fontFamily="sans-serif-medium"/>
 
     <TextView
         android:id="@+id/textViewRegister"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="¿No tienes cuenta? Regístrate"
-        android:textColor="@android:color/holo_green_dark"
+        android:textColor="?attr/colorPrimary"
         android:layout_gravity="center_horizontal"
         android:clickable="true"
         android:focusable="true"
-        android:padding="8dp" /> </LinearLayout>
+        android:padding="8dp"
+        android:textSize="16sp"
+        android:fontFamily="sans-serif-medium"/>
+</LinearLayout>

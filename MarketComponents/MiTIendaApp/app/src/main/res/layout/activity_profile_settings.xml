@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="?attr/colorSurface"
+    tools:context=".ProfileSettingsActivity">
+
+    <TextView
+        android:id="@+id/text_view_profile_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ajustes de Perfil"
+        android:textAppearance="?attr/textAppearanceHeadline5"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="40dp"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="      Nombre de Usuario"
+        style="@style/RoundedTextInputLayout" app:startIconDrawable="@drawable/ic_person"
+        android:layout_marginBottom="16dp"> <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/profile_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:maxLines="1"
+        android:singleLine="true"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="      Correo Electrónico"
+        style="@style/RoundedTextInputLayout" app:startIconDrawable="@drawable/ic_email"
+        android:layout_marginBottom="16dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/profile_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:enabled="false"
+        android:maxLines="1"
+        android:singleLine="true"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="      Teléfono"
+        style="@style/RoundedTextInputLayout" app:startIconDrawable="@drawable/ic_phone"
+        android:layout_marginBottom="16dp"> <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/profile_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="phone"
+        android:maxLines="1"
+        android:singleLine="true"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="      Dirección"
+        style="@style/RoundedTextInputLayout" app:startIconDrawable="@drawable/ic_location"
+        android:layout_marginBottom="32dp"> <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/profile_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textPostalAddress"
+        android:minLines="1"
+        android:maxLines="3"
+        android:gravity="top|start"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonSaveChanges"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="GUARDAR CAMBIOS"
+        android:paddingVertical="12dp"
+        app:cornerRadius="12dp" android:layout_marginBottom="12dp"/> <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonChangePassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CAMBIAR CONTRASEÑA"
+        android:paddingVertical="12dp"
+        app:cornerRadius="12dp" style="@style/Widget.MaterialComponents.Button.TextButton"/>
+
+</LinearLayout>

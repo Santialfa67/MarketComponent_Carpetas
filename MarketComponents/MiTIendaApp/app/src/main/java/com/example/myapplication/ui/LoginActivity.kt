@@ -10,7 +10,7 @@ import com.example.myapplication.MainActivity
 import com.example.myapplication.R
 import com.example.myapplication.model.LoginRequest
 import com.example.myapplication.model.AuthResponse // Importa AuthResponse
-import com.example.myapplication.model.ErrorResponse // Importa ErrorResponse
+import com.example.myapplication.model.ErrorResponseU // Importa ErrorResponse
 import com.example.myapplication.network.RetrofitClient
 import com.example.myapplication.utils.SessionManager
 import com.google.android.material.button.MaterialButton
@@ -64,34 +64,51 @@ class LoginActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
-
-
-//                        val authResponse = response.body()
-//                        Toast.makeText(this@LoginActivity, "¡Login exitoso! ${authResponse?.message}", Toast.LENGTH_SHORT).show()
-//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
-//                        startActivity(intent)
-//                        finish()
-                        val authResponse = response.body()
-                        Toast.makeText(this@LoginActivity, "¡Login exitoso! ${authResponse?.message}", Toast.LENGTH_SHORT).show()
-
-                        // Guardar el estado de login y posiblemente el email/token
+                        val authResponse = response.body() // Esto es un objeto AuthResponse
                         val sessionManager = SessionManager(this@LoginActivity)
-                        sessionManager.saveLoginState(true, authResponse?.token, authResponse?.email) // Guarda el token si lo tienes
 
+                        // **AJUSTE CRUCIAL:**
+                        // Asegúrate de que tu `AuthResponse` tenga estos campos.
+                        // Si tu backend no los envía en la respuesta de login,
+                        // DEBES modificar tu backend para que los incluya.
+                        // Si un campo es opcional (puede ser null), asegúrate de que tu AuthResponse
+                        // lo declare como nullable (ej. `val userPhone: String?`).
+
+                        // Se usa el operador Elvis (?:) para proporcionar un valor por defecto
+                        // si el campo de authResponse es null.
+                        val userId = authResponse?.userId ?: -1 // Si userId es Int?, toma el valor o -1 si es null
+                        val userName = authResponse?.userName // Si userName es String?, toma el valor o null si es null
+                        val userPhone = authResponse?.userPhone // Si userPhone es String?, toma el valor o null si es null
+                        val userAddress = authResponse?.userAddress // Si userAddress es String?, toma el valor o null si es null
+
+
+                        sessionManager.saveLoginState(
+                            isLoggedIn = true,
+                            token = authResponse?.token, // Token podría ser null si no hay respuesta, aunque improbable en isSuccessful
+                            email = authResponse?.email, // Email podría ser null
+                            userId = userId, // userId ahora es un Int (o Int? si así lo definiste en SessionManager)
+                            userName = userName,
+                            userPhone = userPhone,
+                            userAddress = userAddress
+                        )
+
+                        Toast.makeText(this@LoginActivity, "¡Login exitoso!", Toast.LENGTH_SHORT).show() // No es necesario el mensaje del backend aquí
                         val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()
+
                     } else {
                         val errorBodyString = response.errorBody()?.string()
                         val errorMessage = try {
                             if (!errorBodyString.isNullOrEmpty()) {
-                                val errorResponse = Gson().fromJson(errorBodyString, ErrorResponse::class.java)
-                                errorResponse.message // O cualquier otro campo que quieras mostrar
+                                // Aquí se asume que ErrorResponse tiene un campo 'message'
+                                val errorResponse = Gson().fromJson(errorBodyString, ErrorResponseU::class.java)
+                                errorResponse.message
                             } else {
-                                "Error desconocido"
+                                "Error desconocido del servidor"
                             }
                         } catch (e: Exception) {
-                            "Error al procesar la respuesta de error: $errorBodyString"
+                            "Error al procesar la respuesta de error: $errorBodyString (formato JSON inválido)"
                         }
                         Toast.makeText(this@LoginActivity, "Error en el login: ${response.code()} - $errorMessage", Toast.LENGTH_LONG).show()
                     }
@@ -105,13 +122,14 @@ class LoginActivity : AppCompatActivity() {
                     val errorBodyString = e.response()?.errorBody()?.string()
                     val errorMessage = try {
                         if (!errorBodyString.isNullOrEmpty()) {
-                            val errorResponse = Gson().fromJson(errorBodyString, ErrorResponse::class.java)
+                            // Aquí se asume que ErrorResponse tiene un campo 'message'
+                            val errorResponse = Gson().fromJson(errorBodyString, ErrorResponseU::class.java)
                             errorResponse.message
                         } else {
-                            "Error desconocido"
+                            "Error desconocido del servidor"
                         }
                     } catch (ex: Exception) {
-                        "Error al procesar la respuesta HTTP: $errorBodyString"
+                        "Error al procesar la respuesta HTTP: ${e.code()} - $errorBodyString (formato JSON inválido)"
                     }
                     Toast.makeText(this@LoginActivity, "Error HTTP: ${e.code()} - $errorMessage", Toast.LENGTH_LONG).show()
                 }

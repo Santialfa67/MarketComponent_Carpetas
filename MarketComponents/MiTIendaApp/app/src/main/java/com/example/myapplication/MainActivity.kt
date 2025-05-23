@@ -6,7 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button // Importar Button
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -24,8 +24,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.myapplication.ui.LoginActivity
+import com.example.myapplication.ProfileSettingsActivity // Asegúrate de importar tu actividad de ajustes
 import com.example.myapplication.utils.SessionManager
-
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.floatingactionbutton.FloatingActionButton // <--- ¡NUEVA IMPORTACIÓN!
 
 class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
 
@@ -40,7 +42,8 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
     private val categoriaViewModel: CategoriaViewModel by viewModels()
     private lateinit var categoriaAdapter: CategoriaAdapter
     private lateinit var recyclerViewCategorias: RecyclerView
-    private lateinit var buttonLogout: Button // Declarar el botón de logout
+    private lateinit var buttonLogout: MaterialButton // Se mantiene
+    private lateinit var fabSettings: FloatingActionButton // <--- CAMBIADO DE MaterialButton a FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +56,8 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
         // Inicializar vistas
         recyclerViewCategorias = findViewById(R.id.recyclerViewCategorias)
         recyclerViewProductos = findViewById(R.id.recyclerViewProductos)
-        buttonLogout = findViewById(R.id.buttonLogout) // Inicializar el botón de logout
+        buttonLogout = findViewById(R.id.buttonLogout)
+        fabSettings = findViewById(R.id.fab_settings) // <--- Inicializar el FAB con su nuevo ID
 
         setupRecyclerViews()
         setupActivityResultLauncher()
@@ -61,22 +65,19 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
 
         // Lógica para el botón de cerrar sesión
         buttonLogout.setOnClickListener {
-            performLogout() // Llama a la función de logout
+            performLogout()
         }
 
-        // --- ELIMINAR ESTE BLOQUE DE CÓDIGO DE AQUÍ ---
-        // if (sessionManager.isLoggedIn()) {
-        //     val intent = Intent(this, MainActivity::class.java)
-        //     startActivity(intent)
-        // } else {
-        //     val intent = Intent(this, LoginActivity::class.java)
-        //     startActivity(intent)
-        // }
-        // finish()
-        // ---------------------------------------------
-        // Esta lógica debe estar en la primera actividad que se lanza (ej. SplashActivity)
-        // para decidir a dónde ir después de iniciar la app.
+        // Lógica para el FAB de ajustes de perfil
+        fabSettings.setOnClickListener { // <--- Usar el nuevo fabSettings
+            val intent = Intent(this, ProfileSettingsActivity::class.java)
+            startActivity(intent)
+            // No uses finish() aquí si quieres que MainActivity permanezca en la pila
+        }
     }
+
+    // ... (El resto de tus funciones setupRecyclerViews, setupActivityResultLauncher, observeViewModels,
+    // onCreateOptionsMenu, onOptionsItemSelected, onItemClick, performLogout, onBackPressed permanecen igual) ...
 
     private fun setupRecyclerViews() {
         recyclerViewCategorias.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -162,20 +163,17 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
         startDetalleActivityForResult.launch(intent)
     }
 
-    // Función para cerrar sesión
     private fun performLogout() {
         val sessionManager = SessionManager(this)
-        sessionManager.logout() // Borra los datos de sesión
+        sessionManager.logout()
 
-        // Redirige a la pantalla de Login y borra el historial de actividades
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-        finish() // Cierra MainActivity
+        finish()
         Toast.makeText(this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show()
     }
 
-    // Opcional: Controlar el botón de retroceso para que no vuelva al login si ya se deslogueó
     override fun onBackPressed() {
         val sessionManager = SessionManager(this)
         if (!sessionManager.isLoggedIn()) {
@@ -184,7 +182,7 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
             startActivity(intent)
             finish()
         } else {
-            super.onBackPressed() // Comportamiento normal si aún está logueado
+            super.onBackPressed()
         }
     }
 }

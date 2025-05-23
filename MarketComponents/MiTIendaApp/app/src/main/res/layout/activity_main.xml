@@ -1,90 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F5F5F5"
     tools:context=".MainActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:elevation="4dp"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Market Component"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical" />
+
+        </androidx.appcompat.widget.Toolbar>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Market Component"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:text="Categorías"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_gravity="center_vertical" />
+            android:textColor="@android:color/black"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp" />
 
-    </androidx.appcompat.widget.Toolbar>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewCategorias"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <TextView
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Productos Destacados"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginBottom="8dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewProductos"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="12dp"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="2"
+            tools:listitem="@layout/item_producto" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonLogout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:text="Cerrar Sesión"
+            app:cornerRadius="8dp"
+            android:padding="12dp"
+            android:backgroundTint="@color/design_default_color_error"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Categorías"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp" />
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_settings" app:tint="@android:color/white" app:backgroundTint="?attr/colorPrimaryVariant" android:contentDescription="Ajustes de Usuario" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewCategorias"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Productos Destacados"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="@android:color/black"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewProductos"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingBottom="12dp"
-        android:clipToPadding="false"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="2"
-        tools:listitem="@layout/item_producto" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonLogout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Cerrar Sesión"
-        app:cornerRadius="8dp"
-        android:padding="12dp"
-        android:backgroundTint="@color/design_default_color_error"
-        android:textColor="@android:color/white"
-        android:textSize="16sp"/>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
