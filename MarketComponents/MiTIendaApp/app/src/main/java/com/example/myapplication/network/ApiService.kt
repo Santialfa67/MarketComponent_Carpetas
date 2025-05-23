@@ -1,8 +1,11 @@
 package com.example.myapplication.network
 
 import com.example.myapplication.data.request.PedidoRequest
+import com.example.myapplication.model.AuthResponse
 import com.example.myapplication.model.Producto
 import com.example.myapplication.model.Categoria
+import com.example.myapplication.model.LoginRequest
+import com.example.myapplication.model.Usuario
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -56,5 +59,15 @@ interface ApiService {
     ): Producto
 
     @POST("api/pedidos/procesar")
-    suspend fun procesarPedido(@Body pedidoRequest: PedidoRequest): Response<Void> // Esto significa que NO esperamos un JSON en la respuesta.
+    suspend fun procesarPedido(@Body pedidoRequest: PedidoRequest): Response<Void>
+
+    @POST("api/usuarios")
+    suspend fun registrarUsuario(@Body usuario: Usuario): Response<Void>
+
+
+//    @POST("api/auth/login") // Ajusta la ruta a tu endpoint de login en el backend
+//    suspend fun loginUsuario(@Body request: LoginRequest): Response<String> // O Rsponse<LoginResponse> si tu backend devuelve un objeto
+
+    @POST("api/auth/login") // Ajusta la ruta a tu endpoint de login en el backend
+    suspend fun loginUsuario(@Body request: LoginRequest): Response<AuthResponse>
 }

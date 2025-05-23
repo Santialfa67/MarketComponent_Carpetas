@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="hint_name">Nombre</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Contraseña</string>
+    <string name="hint_phone">Teléfono</string>
+    <string name="hint_address">Dirección</string>
+    <string name="desc_create_account">Botón para crear cuenta</string>
+
 </resources>

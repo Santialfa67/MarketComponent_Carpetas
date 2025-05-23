@@ -24,6 +24,9 @@
 
         <activity android:name=".ui.categorias.CategoriaActivity" android:exported="false" />
         <activity android:name=".DetalleProductoActivity" android:exported="false" />
-        <activity android:name=".CarritoActivity" android:exported="false" /> </application>
+        <activity android:name=".CarritoActivity" android:exported="false" />
+        <activity android:name=".ui.RegisterActivity" android:exported="false" />
+    </application>
+
 
 </manifest>
