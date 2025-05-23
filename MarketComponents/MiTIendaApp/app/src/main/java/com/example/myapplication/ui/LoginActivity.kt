@@ -12,6 +12,7 @@ import com.example.myapplication.model.LoginRequest
 import com.example.myapplication.model.AuthResponse // Importa AuthResponse
 import com.example.myapplication.model.ErrorResponse // Importa ErrorResponse
 import com.example.myapplication.network.RetrofitClient
+import com.example.myapplication.utils.SessionManager
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson // Para parsear el cuerpo de error
 import kotlinx.coroutines.CoroutineScope
@@ -63,8 +64,20 @@ class LoginActivity : AppCompatActivity() {
 
                 withContext(Dispatchers.Main) {
                     if (response.isSuccessful) {
+
+
+//                        val authResponse = response.body()
+//                        Toast.makeText(this@LoginActivity, "¡Login exitoso! ${authResponse?.message}", Toast.LENGTH_SHORT).show()
+//                        val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                        startActivity(intent)
+//                        finish()
                         val authResponse = response.body()
                         Toast.makeText(this@LoginActivity, "¡Login exitoso! ${authResponse?.message}", Toast.LENGTH_SHORT).show()
+
+                        // Guardar el estado de login y posiblemente el email/token
+                        val sessionManager = SessionManager(this@LoginActivity)
+                        sessionManager.saveLoginState(true, authResponse?.token, authResponse?.email) // Guarda el token si lo tienes
+
                         val intent = Intent(this@LoginActivity, MainActivity::class.java)
                         startActivity(intent)
                         finish()

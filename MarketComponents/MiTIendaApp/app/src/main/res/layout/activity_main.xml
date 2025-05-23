@@ -73,4 +73,18 @@
         app:spanCount="2"
         tools:listitem="@layout/item_producto" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonLogout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Cerrar Sesión"
+        app:cornerRadius="8dp"
+        android:padding="12dp"
+        android:backgroundTint="@color/design_default_color_error"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"/>
+
 </LinearLayout>

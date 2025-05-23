@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button // Importar Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -19,11 +20,11 @@ import com.example.myapplication.model.Categoria
 import com.example.myapplication.model.Producto
 import com.example.myapplication.ui.categoria.CategoriaAdapter
 import com.example.myapplication.ui.categoria.CategoriaViewModel
-
-
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer // Importar Observer explícitamente
-import androidx.recyclerview.widget.GridLayoutManager // Importar GridLayoutManager
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import com.example.myapplication.ui.LoginActivity
+import com.example.myapplication.utils.SessionManager
 
 
 class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
@@ -32,14 +33,14 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
     private lateinit var recyclerViewProductos: RecyclerView
     private lateinit var productoAdapter: ProductoAdapter
     private var listaDeProductos: List<Producto> = emptyList()
-    private val carritoDeCompras = mutableListOf<Producto>() // Carrito de compras local
+    private val carritoDeCompras = mutableListOf<Producto>()
     private lateinit var startDetalleActivityForResult: ActivityResultLauncher<Intent>
     private var carritoMenuItem: MenuItem? = null
-    // Se elimina: private lateinit var imageViewCarritoToolbar: ImageView // ESTA LÍNEA SE ELIMINA
 
     private val categoriaViewModel: CategoriaViewModel by viewModels()
     private lateinit var categoriaAdapter: CategoriaAdapter
     private lateinit var recyclerViewCategorias: RecyclerView
+    private lateinit var buttonLogout: Button // Declarar el botón de logout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,12 +53,29 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
         // Inicializar vistas
         recyclerViewCategorias = findViewById(R.id.recyclerViewCategorias)
         recyclerViewProductos = findViewById(R.id.recyclerViewProductos)
-        // Se elimina: imageViewCarritoToolbar = findViewById(R.id.imageViewCarritoToolbar) // ESTA LÍNEA SE ELIMINA
+        buttonLogout = findViewById(R.id.buttonLogout) // Inicializar el botón de logout
 
         setupRecyclerViews()
         setupActivityResultLauncher()
-        // Se elimina: setupToolbarListeners() // ESTA FUNCIÓN YA NO ES NECESARIA
         observeViewModels()
+
+        // Lógica para el botón de cerrar sesión
+        buttonLogout.setOnClickListener {
+            performLogout() // Llama a la función de logout
+        }
+
+        // --- ELIMINAR ESTE BLOQUE DE CÓDIGO DE AQUÍ ---
+        // if (sessionManager.isLoggedIn()) {
+        //     val intent = Intent(this, MainActivity::class.java)
+        //     startActivity(intent)
+        // } else {
+        //     val intent = Intent(this, LoginActivity::class.java)
+        //     startActivity(intent)
+        // }
+        // finish()
+        // ---------------------------------------------
+        // Esta lógica debe estar en la primera actividad que se lanza (ej. SplashActivity)
+        // para decidir a dónde ir después de iniciar la app.
     }
 
     private fun setupRecyclerViews() {
@@ -79,23 +97,12 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
             if (result.resultCode == RESULT_OK) {
                 val productoAñadido = result.data?.getParcelableExtra<Producto>("producto_añadido")
                 productoAñadido?.let {
-                    carritoDeCompras.add(it) // Añade el producto al carrito local
-                    // Ya no necesitas actualizar el contador visual si lo eliminaste
-                    // actualizarContadorCarrito() // Si NO tienes badge de contador, comenta o elimina esto
+                    carritoDeCompras.add(it)
                     Toast.makeText(this, "${it.nombre} añadido al carrito", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
-
-    // Se elimina esta función por completo
-    // private fun setupToolbarListeners() {
-    //     imageViewCarritoToolbar.setOnClickListener {
-    //         val intent = Intent(this, CarritoActivity::class.java)
-    //         intent.putParcelableArrayListExtra("carrito", ArrayList(carritoDeCompras))
-    //         startActivity(intent)
-    //     }
-    // }
 
     private fun observeViewModels() {
         categoriaViewModel.categorias.observe(this, Observer { categorias ->
@@ -134,18 +141,6 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         carritoMenuItem = menu?.findItem(R.id.action_carrito)
-
-        // Si previamente tenías un actionLayout para el carrito y un TextView para el badge,
-        // y decidiste eliminar el badge, esta sección también debe ser comentada/eliminada.
-        // Si solo quieres el icono simple del carrito del menu_main.xml, no necesitas esto.
-        // val cartActionView = carritoMenuItem?.actionView
-        // cartActionView?.setOnClickListener {
-        //     onOptionsItemSelected(carritoMenuItem!!)
-        // }
-
-        // Si eliminaste el badge del carrito, esta llamada ya no es necesaria
-        // O si CarritoManager es el que gestiona el badge, la lógica iría allí
-        // actualizarContadorCarrito() // Comenta o elimina si ya no tienes un contador visual en el menú
         return true
     }
 
@@ -153,7 +148,6 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
         return when (item.itemId) {
             R.id.action_carrito -> {
                 val intent = Intent(this, CarritoActivity::class.java)
-                // Pasa los ítems del carrito de compras local a la CarritoActivity
                 intent.putParcelableArrayListExtra("carrito", ArrayList(carritoDeCompras))
                 startActivity(intent)
                 true
@@ -168,13 +162,29 @@ class MainActivity : AppCompatActivity(), ProductoAdapter.OnItemClickListener {
         startDetalleActivityForResult.launch(intent)
     }
 
-    // Esta función ya no es necesaria si eliminaste el badge de contador visual
-    // Si la mantienes, asegúrate de que R.id.cart_badge exista en menu_item_cart_layout.xml
-    // (si es que aún usas un actionLayout para el carrito)
-    // private fun actualizarContadorCarrito() {
-    //     val cartBadgeTextView = carritoMenuItem?.actionView?.findViewById<TextView>(R.id.cart_badge)
-    //     val itemCount = carritoDeCompras.size // Usa el tamaño del carrito local
-    //     cartBadgeTextView?.text = itemCount.toString()
-    //     cartBadgeTextView?.visibility = if (itemCount > 0) View.VISIBLE else View.GONE
-    // }
+    // Función para cerrar sesión
+    private fun performLogout() {
+        val sessionManager = SessionManager(this)
+        sessionManager.logout() // Borra los datos de sesión
+
+        // Redirige a la pantalla de Login y borra el historial de actividades
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish() // Cierra MainActivity
+        Toast.makeText(this, "Sesión cerrada correctamente", Toast.LENGTH_SHORT).show()
+    }
+
+    // Opcional: Controlar el botón de retroceso para que no vuelva al login si ya se deslogueó
+    override fun onBackPressed() {
+        val sessionManager = SessionManager(this)
+        if (!sessionManager.isLoggedIn()) {
+            val intent = Intent(this, LoginActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
+            finish()
+        } else {
+            super.onBackPressed() // Comportamiento normal si aún está logueado
+        }
+    }
 }

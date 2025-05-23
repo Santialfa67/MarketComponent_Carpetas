@@ -1,6 +1,7 @@
 package com.example.myapplication.ui
 
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,28 +34,53 @@ class RegisterActivity : AppCompatActivity() {
 
         registerButton.setOnClickListener {
             val name = nameInput.text.toString().trim()
-            val phone = phoneInput.text.toString().trim()
-            val address = addressInput.text.toString().trim()
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
+            val phone = phoneInput.text.toString().trim()
+            val address = addressInput.text.toString().trim()
 
-            if (name.isNotEmpty() && phone.isNotEmpty() && address.isNotEmpty() &&
-                email.isNotEmpty() && password.isNotEmpty()) {
+            if (!validarCampos(name, email, password, phone, address)) return@setOnClickListener
 
-                val usuario = Usuario(
-                    nombre = name,
-                    email = email,
-                    password = password,
-                    telefono = phone,
-                    direccion = address
-                )
+            val usuario = Usuario(
+                nombre = name,
+                email = email,
+                password = password,
+                telefono = phone,
+                direccion = address
+            )
 
-                registrarUsuario(usuario)
-
-            } else {
-                Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
-            }
+            registrarUsuario(usuario)
         }
+    }
+
+    private fun validarCampos(
+        name: String,
+        email: String,
+        password: String,
+        phone: String,
+        address: String
+    ): Boolean {
+        if (name.isEmpty() || email.isEmpty() || password.isEmpty() || phone.isEmpty() || address.isEmpty()) {
+            Toast.makeText(this, "Completa todos los campos", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            Toast.makeText(this, "Correo inválido", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (password.length < 6) {
+            Toast.makeText(this, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (!phone.all { it.isDigit() } || phone.length < 7) {
+            Toast.makeText(this, "Teléfono inválido", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
     }
 
     private fun registrarUsuario(usuario: Usuario) {
