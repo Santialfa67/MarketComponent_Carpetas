@@ -15,6 +15,7 @@
     <color name="app_background">#F5F5F5</color>
     <color name="gray_200">#EEEEEE</color>
     <color name="gray_300">#E0E0E0</color>
+    <color name="colorPrimaryVariant">#3700B3</color>
 
 </resources>
 

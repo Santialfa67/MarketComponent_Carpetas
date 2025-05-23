@@ -11,10 +11,13 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplication.R
 import com.example.myapplication.model.CarritoItem
+import com.example.myapplication.model.Producto
+import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
 
 class CarritoAdapter(
-    private val onQuantityChanged: (CarritoItem, Int) -> Unit
+    private val onQuantityChange: (Producto, Int) -> Unit, // (producto, nuevaCantidad)
+    private val onRemoveItem: (Producto) -> Unit // (producto) cuando la cantidad es 0 o menos
 ) : ListAdapter<CarritoItem, CarritoAdapter.CarritoViewHolder>(CarritoItemDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CarritoViewHolder {
@@ -28,43 +31,61 @@ class CarritoAdapter(
     }
 
     inner class CarritoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val imageView: ImageView = itemView.findViewById(R.id.imageViewCarritoItem)
-        private val nombreTextView: TextView = itemView.findViewById(R.id.textViewNombreCarritoItem)
-        private val precioTextView: TextView = itemView.findViewById(R.id.textViewPrecioCarritoItem)
-        private val cantidadTextView: TextView = itemView.findViewById(R.id.textViewCantidadCarritoItem)
-        private val btnDisminuir: Button = itemView.findViewById(R.id.buttonDisminuirCantidad)
-        private val btnAumentar: Button = itemView.findViewById(R.id.buttonAumentarCantidad)
+        private val imageViewCarritoItem: ImageView = itemView.findViewById(R.id.imageViewCarritoItem)
+        private val textViewNombreCarritoItem: TextView = itemView.findViewById(R.id.textViewNombreCarritoItem)
+        private val textViewPrecioCarritoItem: TextView = itemView.findViewById(R.id.textViewPrecioCarritoItem) // <-- CORREGIDA
+        private val textViewCantidadCarritoItem: TextView = itemView.findViewById(R.id.textViewCantidadCarritoItem)
+        private val buttonDisminuirCantidad: MaterialButton = itemView.findViewById(R.id.buttonDisminuirCantidad) // Cambiar a MaterialButton
+        private val buttonAumentarCantidad: MaterialButton = itemView.findViewById(R.id.buttonAumentarCantidad) // Cambiar a MaterialButton
+        private val textViewSubtotalItem: TextView = itemView.findViewById(R.id.textViewSubtotalItem) // Nuevo TextView
 
         fun bind(item: CarritoItem) {
-            nombreTextView.text = item.producto.nombre
-            precioTextView.text = String.format("$%.2f", item.producto.precio)
-            cantidadTextView.text = item.cantidad.toString()
+            textViewNombreCarritoItem.text = item.producto.nombre
+            textViewPrecioCarritoItem.text = "$${String.format("%.2f", item.producto.precio)}"
+            textViewCantidadCarritoItem.text = item.cantidad.toString()
 
+            // Cargar imagen con Picasso
             item.producto.imagen?.let { imageUrl ->
-                Picasso.get().load(imageUrl).into(imageView)
-            } ?: imageView.setImageResource(R.drawable.ic_launcher_background)
-
-            btnDisminuir.setOnClickListener {
-                onQuantityChanged(item, item.cantidad - 1)
+                Picasso.get()
+                    .load(imageUrl)
+                    .placeholder(R.drawable.ic_launcher_foreground) // Placeholder
+                    .error(R.drawable.ic_launcher_background) // Error
+                    .into(imageViewCarritoItem)
+            } ?: run {
+                imageViewCarritoItem.setImageResource(R.drawable.ic_launcher_background)
             }
 
-            btnAumentar.setOnClickListener {
-                onQuantityChanged(item, item.cantidad + 1)
+            // Calcular y mostrar el subtotal de este item
+            val subtotal = item.producto.precio * item.cantidad
+            textViewSubtotalItem.text = "$${String.format("%.2f", subtotal)}"
+
+
+            buttonDisminuirCantidad.setOnClickListener {
+                var newQuantity = item.cantidad - 1
+                if (newQuantity < 0) newQuantity = 0 // Evitar cantidades negativas
+                onQuantityChange(item.producto, newQuantity)
+                if (newQuantity == 0) {
+                    onRemoveItem(item.producto) // Llamar para remover si la cantidad llega a 0
+                }
+            }
+
+            buttonAumentarCantidad.setOnClickListener {
+                val newQuantity = item.cantidad + 1
+                onQuantityChange(item.producto, newQuantity)
             }
         }
     }
-}
 
-class CarritoItemDiffCallback : DiffUtil.ItemCallback<CarritoItem>() {
-    override fun areItemsTheSame(oldItem: CarritoItem, newItem: CarritoItem): Boolean {
-        // Los ítems son los mismos si sus IDs de producto coinciden
-        return oldItem.producto.producto_id == newItem.producto.producto_id
-    }
+    class CarritoItemDiffCallback : DiffUtil.ItemCallback<CarritoItem>() {
+        override fun areItemsTheSame(oldItem: CarritoItem, newItem: CarritoItem): Boolean {
+            return oldItem.producto.producto_id == newItem.producto.producto_id // Comparar por ID del producto
+        }
 
-    override fun areContentsTheSame(oldItem: CarritoItem, newItem: CarritoItem): Boolean {
-        // Los contenidos son los mismos si el objeto CarritoItem es el mismo (data class equals)
-        // Esto funciona bien si CarritoItem es un 'data class' en Kotlin,
-        // ya que la igualdad se basa en todos sus propiedades.
-        return oldItem == newItem
+        override fun areContentsTheSame(oldItem: CarritoItem, newItem: CarritoItem): Boolean {
+            // Comparar si el contenido es el mismo (nombre, precio y cantidad son suficientes)
+            return oldItem.producto.nombre == newItem.producto.nombre &&
+                    oldItem.producto.precio == newItem.producto.precio &&
+                    oldItem.cantidad == newItem.cantidad
+        }
     }
 }
