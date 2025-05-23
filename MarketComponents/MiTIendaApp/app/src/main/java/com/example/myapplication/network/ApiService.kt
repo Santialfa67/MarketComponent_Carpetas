@@ -79,4 +79,6 @@ interface ApiService {
     // Opcional: para cargar el perfil si no está en SharedPreferences
     @GET("api/usuarios/{id}")
     suspend fun getUsuarioById(@Path("id") userId: Int): Response<Usuario>
+
+
 }

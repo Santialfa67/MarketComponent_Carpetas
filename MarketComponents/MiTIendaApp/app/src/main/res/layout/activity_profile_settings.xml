@@ -42,13 +42,13 @@
         android:layout_marginBottom="16dp">
 
         <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/profile_email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:enabled="false"
-        android:maxLines="1"
-        android:singleLine="true"/>
+            android:id="@+id/profile_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:enabled="false"
+            android:maxLines="1"
+            android:singleLine="true"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -86,7 +86,9 @@
         android:layout_height="wrap_content"
         android:text="GUARDAR CAMBIOS"
         android:paddingVertical="12dp"
-        app:cornerRadius="12dp" android:layout_marginBottom="12dp"/> <com.google.android.material.button.MaterialButton
+        app:cornerRadius="12dp" android:layout_marginBottom="12dp"/>
+
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonChangePassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
