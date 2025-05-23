@@ -17,5 +17,20 @@
     <color name="gray_300">#E0E0E0</color>
     <color name="colorPrimaryVariant">#3700B3</color>
 
+
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+
+    <color name="colorSecondary">#FFC107</color>
+    <color name="colorSecondaryVariant">#FFA000</color>
+    <color name="colorOnSecondary">#000000</color>
+
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorOnSurface">#000000</color> <color name="colorBackground">#FFFFFF</color>
+
+    <color name="colorError">#B00020</color>
+    <color name="colorOnError">#FFFFFF</color>
+
+
 </resources>
 

@@ -1,7 +1,10 @@
-package com.example.myapplication.model // O .data.response
+// com.example.myapplication.model/ErrorResponse.kt
+package com.example.myapplication.model
+
+import com.google.gson.annotations.SerializedName
 
 data class ErrorResponseU(
-    val message: String,
-    val timestamp: String? = null,
-    val status: Int? = null
+    @SerializedName("message") val message: String, // Asegúrate que el nombre del campo en JSON sea "message"
+    @SerializedName("timestamp") val timestamp: String? = null,
+    @SerializedName("status") val status: Int? = null
 )

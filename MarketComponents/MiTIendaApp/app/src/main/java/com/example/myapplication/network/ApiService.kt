@@ -12,6 +12,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.Response // Para obtener el cuerpo de la respuesta o manejar 200 OK
+import retrofit2.http.PUT
 
 
 //interface ApiService {
@@ -70,4 +71,12 @@ interface ApiService {
 
     @POST("api/auth/login") // Ajusta la ruta a tu endpoint de login en el backend
     suspend fun loginUsuario(@Body request: LoginRequest): Response<AuthResponse>
+
+
+    @PUT("api/usuarios/{id}") // Asume esta ruta en tu backend
+    suspend fun actualizarUsuario(@Path("id") userId: Int, @Body usuario: Usuario): Response<Usuario>
+
+    // Opcional: para cargar el perfil si no está en SharedPreferences
+    @GET("api/usuarios/{id}")
+    suspend fun getUsuarioById(@Path("id") userId: Int): Response<Usuario>
 }
