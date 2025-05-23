@@ -1,13 +1,14 @@
-// backend/com/backApi/demo/Service/UsuarioService.java
 package com.backApi.demo.Service;
 
 import com.backApi.demo.Model.Usuario;
 import com.backApi.demo.Repository.UsuarioRepository;
+import com.backApi.demo.Dto.UsuarioDTO;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class UsuarioService {
@@ -18,7 +19,7 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    // Método para guardar un usuario (usado en el registro)
+
     public Usuario guardarUsuario(Usuario usuario) {
         if (usuario.getFechaRegistro() == null) {
             usuario.setFechaRegistro(LocalDateTime.now());
@@ -26,29 +27,67 @@ public class UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
-    // Método para verificar si un email ya existe (usado en el registro)
+
     public boolean existeEmail(String email) {
         return usuarioRepository.findByEmail(email).isPresent();
     }
 
-    // Método para buscar un usuario por email (¡Nuevo o Asegúrate de que exista!)
+
     public Optional<Usuario> findByEmail(String email) {
         return usuarioRepository.findByEmail(email);
     }
 
-    // Método para verificar credenciales (si aún lo usas en el AuthController, si no, puedes quitarlo)
-    // Si lo mantienes, podrías modificarlo para devolver Optional<Usuario> en lugar de boolean
-    public boolean verificarCredenciales(String email, String password) {
+
+    public Usuario autenticarUsuario(String email, String password) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(email);
         if (usuarioOptional.isPresent()) {
             Usuario usuario = usuarioOptional.get();
-            // ¡IMPORTANTE! Esto es para pruebas. En producción, compara contraseñas hasheadas.
-            return usuario.getPassword().equals(password);
+
+
+            if (usuario.getPassword().equals(password)) {
+                return usuario;
+            }
         }
-        return false;
+        return null;
     }
 
-    // Otros métodos existentes
+    public List<UsuarioDTO> getAllUsuariosDTO() {
+        return usuarioRepository.findAll()
+                .stream()
+                .map(this::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
+    public Optional<UsuarioDTO> getUsuarioDTOByUserId(Integer userId) { // Nombre modificado
+        return usuarioRepository.findByUserId(userId)
+                .map(this::convertToDto);
+    }
+
+
+    private UsuarioDTO convertToDto(Usuario usuario) {
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.setUserId(usuario.getUserId());
+        dto.setNombre(usuario.getNombre());
+        dto.setEmail(usuario.getEmail());
+        dto.setTelefono(usuario.getTelefono());
+        dto.setDireccion(usuario.getDireccion());
+        dto.setPreferencias(usuario.getPreferencias());
+
+        return dto;
+    }
+
+
+    public Optional<Usuario> findByUserId(Integer userId) {
+        return usuarioRepository.findByUserId(userId);
+    }
+
+    public Usuario actualizarUsuario(Usuario usuario) {
+
+        return usuarioRepository.save(usuario);
+    }
+
+
     public List<Usuario> obtenerTodos() {
         return usuarioRepository.findAll();
     }
@@ -57,7 +96,7 @@ public class UsuarioService {
         return usuarioRepository.findById(id);
     }
 
-    public void eliminarUsuario(Integer id) {
-        usuarioRepository.deleteById(id);
+    public void eliminarUsuario(Integer userId) {
+        usuarioRepository.deleteByUserId(userId);
     }
 }
