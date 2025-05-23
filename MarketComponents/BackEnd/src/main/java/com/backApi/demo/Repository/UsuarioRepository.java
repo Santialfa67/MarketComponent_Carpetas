@@ -1,4 +1,4 @@
-// backend/com/backApi/demo/Repository/UsuarioRepository.java
+// com.backApi.demo.Repository/UsuarioRepository.java
 package com.backApi.demo.Repository;
 
 import com.backApi.demo.Model.Usuario;
@@ -9,6 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
-    // Añade este método:
     Optional<Usuario> findByEmail(String email);
+
+    Optional<Usuario> findByUserId(Integer userId);
+
+    void deleteByUserId(Integer userId);
 }
