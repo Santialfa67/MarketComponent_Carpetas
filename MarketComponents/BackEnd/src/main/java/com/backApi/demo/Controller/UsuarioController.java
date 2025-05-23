@@ -49,7 +49,7 @@ public class UsuarioController {
         Usuario usuario = existente.get();
         usuario.setNombre(usuarioActualizado.getNombre());
         usuario.setEmail(usuarioActualizado.getEmail());
-        usuario.setContraseña(usuarioActualizado.getContraseña());
+        usuario.setPassword(usuarioActualizado.getPassword());
         usuario.setTelefono(usuarioActualizado.getTelefono());
         usuario.setFechaRegistro(usuarioActualizado.getFechaRegistro());
         usuario.setDireccion(usuarioActualizado.getDireccion());

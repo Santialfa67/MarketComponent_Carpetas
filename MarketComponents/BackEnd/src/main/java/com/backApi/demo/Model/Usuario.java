@@ -25,8 +25,12 @@ public class Usuario {
     @Column(length = 255, unique = true, nullable = false)
     private String email;
 
+//    @Column(length = 255, nullable = false)
+//    private String contraseña;
+
+    // ¡CAMBIO AQUÍ! Mapea la propiedad 'password' a la columna 'contraseña' en la DB
     @Column(length = 255, nullable = false)
-    private String contraseña;
+    private String password;
 
     @Column(length = 10)
     private String telefono;
